@@ -1,5 +1,6 @@
 package com.udacity.sandwichclub.utils;
 
+import android.util.Log;
 import com.udacity.sandwichclub.model.Sandwich;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +9,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class JsonUtils {
+
+    private static final String TAG = "JsonUtils";
 
     public static Sandwich parseSandwichJson(String json) {
         Sandwich sandwich = new Sandwich();
@@ -30,7 +33,8 @@ public class JsonUtils {
             JSONArray ingredients = jsonObject.getJSONArray("ingredients");
             sandwich.setIngredients(convertToList(ingredients));
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.toString());
+            return null;
         }
 
         return sandwich;

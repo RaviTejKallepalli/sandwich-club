@@ -9,16 +9,17 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.udacity.sandwichclub.model.Sandwich;
 import com.udacity.sandwichclub.utils.JsonUtils;
+import java.util.List;
 
 public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_POSITION = -1;
 
-    private TextView placeOfOrigin;
-    private TextView alsoKnowAs;
-    private TextView ingridents;
-    private TextView description;
+    private TextView placeOfOrigin_tv;
+    private TextView alsoKnowAs_tv;
+    private TextView ingridents_tv;
+    private TextView description_tv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +59,10 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void initializeUI() {
-        ingridents = findViewById(R.id.ingredients_tv);
-        description = findViewById(R.id.description_tv);
-        alsoKnowAs = findViewById(R.id.also_known_tv);
-        placeOfOrigin = findViewById(R.id.origin_tv);
+        ingridents_tv = findViewById(R.id.ingredients_tv);
+        description_tv = findViewById(R.id.description_tv);
+        alsoKnowAs_tv = findViewById(R.id.also_known_tv);
+        placeOfOrigin_tv = findViewById(R.id.origin_tv);
     }
 
     private void closeOnError() {
@@ -71,22 +72,30 @@ public class DetailActivity extends AppCompatActivity {
 
     private void populateUI(Sandwich sandwich) {
 
-        description.setText(sandwich.getDescription());
-        placeOfOrigin.setText(sandwich.getPlaceOfOrigin());
+        String description = sandwich.getDescription();
+        String placeOfOrigin = sandwich.getPlaceOfOrigin();
+        List<String> ingredients = sandwich.getIngredients();
+        List<String> alsoKnowAs = sandwich.getAlsoKnownAs();
 
-        if (sandwich.getIngredients().isEmpty()) {
-            ingridents.setText(getString(R.string.not_available));
-        } else {
-            for (String ingrident : sandwich.getIngredients()) {
-                ingridents.append(ingrident + "\n");
-            }
-        }
+        description_tv
+            .setText(isEmptyOrNull(description) ? getString(R.string.not_available) : description);
+        placeOfOrigin_tv.setText(
+            isEmptyOrNull(placeOfOrigin) ? getString(R.string.not_available) : placeOfOrigin);
 
-        if (sandwich.getIngredients().isEmpty()) {
-            alsoKnowAs.setText(getString(R.string.not_available));
+        setListToTextView(ingridents_tv, ingredients);
+        setListToTextView(alsoKnowAs_tv, alsoKnowAs);
+    }
+
+    private boolean isEmptyOrNull(String input) {
+        return input == null || input.isEmpty();
+    }
+
+    private void setListToTextView(TextView textView, List<String> list) {
+        if (list.isEmpty()) {
+            textView.setText(getString(R.string.not_available));
         } else {
-            for (String ingrident : sandwich.getAlsoKnownAs()) {
-                alsoKnowAs.append(ingrident + "\n");
+            for (String ingredient : list) {
+                textView.append(ingredient + "\n");
             }
         }
     }
